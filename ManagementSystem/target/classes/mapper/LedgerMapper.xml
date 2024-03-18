@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csy.mapper.LedgerMapper">
+    <insert id="shipOut">
+        insert  into ledger(product_id,store_id,quantity,type,timestamp)
+        values (#{id},#{sid},#{specification},#{type},now())
+    </insert>
+
+    <select id="querys" resultMap="com.csy.entity.Ledger">
+        select * from ledger where product_id=#{pid} and store_id=#{sid};
+    </select>
+    <select id="findAllLedger" resultMap="com.csy.entity.Ledger" parameterType="java.util.List">
+        select * from ledger where
+        <if test="ids !=null and ids.size()>0">
+            <foreach collection="ids" open=" and product_id in (" close=")" item="pid" separator=",">
+                #{pid}
+            </foreach>
+        </if>,
+        <if test="date !=null and date !=''">
+            timestamp >=#{date}
+        </if>
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+    <select id="CountSelectAll">
+        select Count(*) from ledger;
+    </select>
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.csy.mapper.ProductMapper">
+    <select id="selectProductsAll" resultType="Products">
+        select * from products
+    </select>
+    <select id="CountSelectAll" resultType="Products">
+        select Count(*) from products
+    </select>
+    <select id="findAllProducts" resultType="Products">
+        select * from products where
+        <if test="optional != null and optional != ''">
+        WHERE optional LIKE CONCAT('%', #{optional}, '%')
+    </if>
+        ORDER BY timestamp
+        LIMIT #{limit} OFFSET #{offset}
+    </select>
+
+    <select id="findByName" resultType="Products">
+        select * from products where
+        <if test="optional != null and optional != ''">
+            WHERE optional LIKE CONCAT('%', #{optional}, '%')
+        </if>
+    </select>
+<!--    修改-->
+    <update id="updateProducts" parameterType="products">
+        update products
+        set
+        <if test="optional !=null and optional !='' ">
+            optional=#{optional},
+        </if>
+        <if test="specification !=null and specification !='' ">
+            specification=#{specification},
+        </if>
+        <if test="price !=null and optional !='' ">
+            price=#{price}
+        </if>
+    </update>
+<!--    删除 -->
+    <update id="deleteProduct" parameterType="java.lang.Integer">
+        update product
+        set del=0;
+    </update>
+    <insert id="insertProduct" parameterType="products">
+        insert  into prodects
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="optional != null and optional != ''">
+                optional,
+            </if>
+            <if test="specification != null and specification !=''">
+                specification,
+            </if>
+            <if test="price != null and price !=''">
+                price,
+            </if>
+            <if test="del != null and del !=''">
+                del,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="optional != null and optional != ''">
+                #{optional},
+            </if>
+            <if test="specification != null and specification !=''">
+                #{specification},
+            </if>
+            <if test="price != null and price !=''">
+                #{price},
+            </if>
+            <if test="del != null and del !=''">
+                #{del},
+            </if>
+        </trim>
+    </insert>
+</mapper>
